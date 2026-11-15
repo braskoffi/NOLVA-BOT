@@ -6,6 +6,8 @@ import datetime as dt
 import discord
 from discord import app_commands
 
+import premium
+
 COLOR = 0x7CF0D0
 DEFAUT = {"categorie": None, "role_staff": None, "transcriptions": None, "compteur": 0, "ouverts": {}}
 B = None  # le bot, rempli dans setup()
@@ -105,6 +107,8 @@ class OuvrirView(discord.ui.View):
     @discord.ui.button(label="Ouvrir un ticket", emoji="🎫", style=discord.ButtonStyle.primary, custom_id="nolva:ticket:ouvrir")
     async def ouvrir(self, i: discord.Interaction, button: discord.ui.Button):
         g, t = i.guild, cfg(i.guild.id)
+        if not premium.actif(g.id):
+            return await i.response.send_message(premium.MSG, ephemeral=True)
         for cid, info in list(t["ouverts"].items()):
             if info["user"] == i.user.id:
                 ch = g.get_channel(int(cid))
@@ -169,6 +173,7 @@ async def config(i: discord.Interaction, categorie: discord.CategoryChannel = No
 
 @grp.command(name="panneau", description="Envoyer le message avec le bouton « Ouvrir un ticket »")
 @ADMIN
+@premium.requis
 async def panneau(i: discord.Interaction, salon: discord.TextChannel = None,
                   titre: str = "Besoin d’aide ?",
                   texte: str = "Appuie sur le bouton ci-dessous pour ouvrir un ticket privé avec l’équipe."):

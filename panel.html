@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>NOLVA · Panneau</title>
+<style>
+:root{--bg:#030617;--card:rgba(10,18,58,.78);--line:rgba(120,170,255,.2);--tx:#e8f0ff;--mu:#8fa6d6;--ac:#5aa9ff;--ac2:#2c5cc0;--bad:#ff6b6b;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;color:var(--tx);font:16px/1.5 -apple-system,system-ui,"Segoe UI",sans-serif;background:radial-gradient(1200px 700px at 80% -10%,#0d2a78 0,transparent 60%),radial-gradient(900px 600px at 0% 100%,#0a1a5a 0,transparent 55%),var(--bg);padding:max(16px,env(safe-area-inset-top)) 16px max(24px,env(safe-area-inset-bottom))}
+main{max-width:720px;margin:0 auto}
+h1{font-size:1.5rem;margin:.2em 0}h2{font-size:1.1rem;margin:0 0 .6em}
+.logo{font-weight:800;letter-spacing:.14em;color:var(--ac)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;margin:14px 0;backdrop-filter:blur(8px)}
+.mu{color:var(--mu);font-size:.9rem}
+.btn{display:inline-block;border:0;border-radius:12px;padding:11px 18px;font:600 1rem inherit;color:#fff;background:linear-gradient(135deg,var(--ac),var(--ac2));cursor:pointer;text-decoration:none}
+.btn.s{background:transparent;border:1px solid var(--line);color:var(--tx)}
+.btn.d{background:transparent;border:1px solid var(--bad);color:var(--bad);padding:6px 10px;font-size:.85rem}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.sp{justify-content:space-between}
+.g{display:flex;align-items:center;gap:12px;padding:12px;border:1px solid var(--line);border-radius:14px;margin:8px 0}
+.g img,.g i{width:40px;height:40px;border-radius:50%;background:#12266e;flex:none;font-style:normal;display:grid;place-items:center;font-weight:700}
+.g b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.t{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+.t:last-child{border:0}.t strong{display:block}.t span{color:var(--mu);font-size:.85rem}
+input[type=checkbox]{appearance:none;-webkit-appearance:none;width:50px;height:30px;border-radius:15px;background:#1a2a66;position:relative;flex:none;cursor:pointer;transition:.2s}
+input[type=checkbox]::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:.2s}
+input[type=checkbox]:checked{background:var(--ac)}input[type=checkbox]:checked::after{left:23px}
+label.f{display:block;margin:12px 0 4px;color:var(--mu);font-size:.9rem}
+select,input[type=number],input[type=text],textarea{width:100%;padding:11px;border-radius:12px;border:1px solid var(--line);background:#0a1240;color:var(--tx);font:inherit}
+textarea{min-height:90px;resize:vertical}
+.nums{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.err{border-color:var(--bad);color:#ffb3b3}
+#toast{position:fixed;left:50%;bottom:max(20px,env(safe-area-inset-bottom));transform:translate(-50%,30px);background:#0d1c5c;border:1px solid var(--line);padding:11px 18px;border-radius:12px;opacity:0;transition:.25s;pointer-events:none;max-width:90%}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+.rule{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line)}
+</style>
+</head>
+<body>
+<main id="root"></main>
+<div id="toast" role="status"></div>
+<script>
+(function(){
+"use strict";
+var root=document.getElementById("root"),toastEl=document.getElementById("toast"),CSRF="",tt;
+var OK=/^[0-9]+$/,OKH=/^[a-zA-Z0-9_]+$/;
+
+/* Tout le contenu venant de Discord passe par textContent : aucune insertion de HTML. */
+function h(tag,attrs){
+  var e=document.createElement(tag),k,a=attrs||{};
+  for(k in a){if(a[k]===null||a[k]===undefined||a[k]===false)continue;
+    if(k==="class")e.className=a[k];else if(k.slice(0,2)==="on")e[k]=a[k];else e.setAttribute(k,a[k]===true?"":a[k])}
+  for(var i=2;i<arguments.length;i++){var c=arguments[i];
+    if(Array.isArray(c))c.forEach(function(x){e.append(x.nodeType?x:document.createTextNode(String(x)))});
+    else if(c!==null&&c!==undefined&&c!==false)e.append(c.nodeType?c:document.createTextNode(String(c)))}
+  return e}
+function say(m){toastEl.textContent=m;toastEl.classList.add("on");clearTimeout(tt);tt=setTimeout(function(){toastEl.classList.remove("on")},3500)}
+function show(){root.textContent="";for(var i=0;i<arguments.length;i++)root.append(arguments[i])}
+
+function api(path,method,body){
+  var o={method:method||"GET",credentials:"same-origin",headers:{}};
+  if(o.method!=="GET")o.headers["X-CSRF-Token"]=CSRF;
+  if(body!==undefined){o.headers["Content-Type"]="application/json";o.body=JSON.stringify(body)}
+  return fetch(path,o).then(function(r){return r.json().catch(function(){return null}).then(function(j){
+    if(!r.ok){var e=new Error((j&&j.erreur)||("Erreur "+r.status));e.status=r.status;throw e}return j})})}
+
+function top(me){
+  return h("div",{class:"row sp"},h("div",{class:"logo"},"NOLVA"),
+    me?h("div",{class:"row"},me.user.avatar&&OK.test(me.user.id)&&OKH.test(me.user.avatar)?h("img",{src:"https://cdn.discordapp.com/avatars/"+me.user.id+"/"+me.user.avatar+".png?size=64",width:"32",height:"32",alt:"",style:"border-radius:50%"}):null,
+      h("span",{class:"mu"},me.user.name),
+      h("button",{class:"btn s",onclick:function(){api("/logout","POST",{}).then(start,start)}},"Déconnexion")):null)}
+
+function connexion(msg){
+  var q=new URLSearchParams(location.search).get("erreur");
+  show(top(),h("div",{class:"card"},h("h1",null,"Panneau NOLVA"),
+    h("p",{class:"mu"},"Connecte-toi avec Discord pour régler NOLVA sur les serveurs que tu administres."),
+    (q||msg)?h("p",{class:"err"},msg||"La connexion a échoué. Réessaie."):null,
+    h("a",{class:"btn",href:"/login"},"Se connecter avec Discord")))}
+
+function accueil(me){
+  var liste=me.guilds.map(function(g){
+    var ic=g.icon&&OK.test(g.id)&&OKH.test(g.icon)?h("img",{src:"https://cdn.discordapp.com/icons/"+g.id+"/"+g.icon+".png?size=64",alt:""}):h("i",null,(g.name||"?").slice(0,1).toUpperCase());
+    return h("div",{class:"g"},ic,h("b",null,g.name),
+      g.bot?h("button",{class:"btn",onclick:function(){ouvrir(me,g.id)}},"Gérer"):h("a",{class:"btn s",href:g.invite},"Ajouter NOLVA"))});
+  show(top(me),h("div",{class:"card"},h("h2",null,"Tes serveurs"),
+    liste.length?liste:h("p",{class:"mu"},"Aucun serveur que tu administres n’a été trouvé.")))}
+
+function opts(sel,items,val,vide){
+  if(vide)sel.append(h("option",{value:""},vide));
+  items.forEach(function(x){sel.append(h("option",{value:x.id},x.name))});
+  sel.value=val||"";return sel}
+function nombre(label,v,min,max){var i=h("input",{type:"number",min:min,max:max,value:v});return{i:i,el:h("div",null,h("label",{class:"f"},label),i)}}
+
+function ouvrir(me,gid){
+  api("/api/guild/"+gid).then(function(d){fiche(me,d)}).catch(function(e){say(e.message);if(e.status===401)start()})}
+
+function fiche(me,d){
+  var sw={},k,fe=h("div",{class:"card"},h("h2",null,"Fonctions"));
+  Object.keys(d.features).forEach(function(k){var f=d.features[k];
+    var c=h("input",{type:"checkbox","aria-label":f.label});c.checked=f.on;sw[k]=c;
+    fe.append(h("label",{class:"t"},h("div",null,h("strong",null,f.label)),c))});
+  var s=nombre("Seuil (arrivées)",d.antiraid.seuil,3,50),f2=nombre("Fenêtre (s)",d.antiraid.fenetre,3,120),du=nombre("Durée (min)",d.antiraid.duree_min,1,1440);
+  var ar=h("div",{class:"card"},h("h2",null,"Anti-raid"),h("div",{class:"nums"},s.el,f2.el,du.el));
+  var sj=opts(h("select"),d.listes.textes,d.channels.journal,"— aucun —"),sb=opts(h("select"),d.listes.textes,d.channels.bienvenue,"— aucun —");
+  var sa=opts(h("select"),d.listes.roles_ok,d.autorole,"— aucun —");
+  var ta=h("textarea",{maxlength:"1500"});ta.value=d.bienvenue_msg;
+  var sal=h("div",{class:"card"},h("h2",null,"Salons et accueil"),h("label",{class:"f"},"Salon du journal"),sj,h("label",{class:"f"},"Salon de bienvenue"),sb,
+    h("label",{class:"f"},"Message de bienvenue ({user}, {server}, {count})"),ta,h("label",{class:"f"},"Rôle automatique"),sa);
+  var tc=opts(h("select"),d.listes.categories,d.tickets.categorie,"— en haut du serveur —"),tr=opts(h("select"),d.listes.roles,d.tickets.role_staff,"— aucun —"),tt2=opts(h("select"),d.listes.textes,d.tickets.transcriptions,"— salon du journal —");
+  var tk=h("div",{class:"card"},h("h2",null,"Tickets"),h("label",{class:"f"},"Catégorie des tickets"),tc,h("label",{class:"f"},"Rôle de l’équipe"),tr,h("label",{class:"f"},"Salon des transcriptions"),tt2,
+    h("p",{class:"mu"},"Le bouton « Ouvrir un ticket » s’envoie avec la commande /ticket panneau."));
+  function v(x){return x.value||null}
+  function num(x){var n=parseInt(x.i.value,10);return isNaN(n)?null:n}
+  var save=h("button",{class:"btn",onclick:function(){
+    var feats={};Object.keys(sw).forEach(function(k){feats[k]=sw[k].checked});
+    api("/api/guild/"+d.id,"POST",{features:feats,antiraid:{seuil:num(s),fenetre:num(f2),duree_min:num(du)},
+      channels:{journal:v(sj),bienvenue:v(sb)},bienvenue_msg:ta.value,autorole:v(sa),
+      tickets:{categorie:v(tc),role_staff:v(tr),transcriptions:v(tt2)}})
+    .then(function(){say("Réglages enregistrés ✅")}).catch(function(e){say(e.message);if(e.status===401)start()})}},"Enregistrer les réglages");
+  show(top(me),h("div",{class:"row sp"},h("div",null,h("h1",null,d.name),h("span",{class:"mu"},d.premium?"⭐ Premium":"Offre gratuite")),h("button",{class:"btn s",onclick:start},"← Serveurs")),fe,ar,sal,tk,h("div",{class:"row"},save),autos(me,d))}
+
+function autos(me,d){
+  var box=h("div",{class:"card"}),m=d.meta;
+  function liste(){return d.automations.length?d.automations.map(function(r){
+    return h("div",{class:"rule"},h("span",null,r.resume),h("button",{class:"btn d",onclick:function(){
+      api("/api/guild/"+d.id+"/auto/"+r.id,"DELETE").then(function(n){d.automations=n.automations;draw()}).catch(function(e){say(e.message)})}},"Supprimer"))}):h("p",{class:"mu"},"Aucune automatisation.")}
+  var q=h("select"),a=h("select"),mot=h("input",{type:"text",maxlength:"100",placeholder:"mot à surveiller"}),tx=h("textarea",{maxlength:"1500",placeholder:"Texte ({user}, {server}, {count})"}),
+      sc=opts(h("select"),d.listes.textes,"","— salon du message —"),sr=opts(h("select"),d.listes.roles_ok,"",null),mn=h("input",{type:"number",min:"1",max:"1440",value:"10"}),dyn=h("div");
+  Object.keys(m.declencheurs).forEach(function(k){q.append(h("option",{value:k},m.declencheurs[k]))});
+  function maj(){
+    var poss=m.possible[q.value],old=a.value;a.textContent="";
+    poss.forEach(function(k){a.append(h("option",{value:k},m.actions[k]))});if(poss.indexOf(old)>-1)a.value=old;
+    dyn.textContent="";
+    if(q.value==="message_contient")dyn.append(h("label",{class:"f"},"Mot ou phrase"),mot);
+    if(a.value==="envoyer_message"||a.value==="message_prive")dyn.append(h("label",{class:"f"},"Texte"),tx);
+    if(a.value==="envoyer_message")dyn.append(h("label",{class:"f"},"Salon"),sc);
+    if(a.value==="donner_role"||a.value==="retirer_role")dyn.append(h("label",{class:"f"},"Rôle"),sr);
+    if(a.value==="muet")dyn.append(h("label",{class:"f"},"Minutes"),mn)}
+  q.onchange=maj;a.onchange=maj;
+  var add=h("button",{class:"btn",onclick:function(){
+    api("/api/guild/"+d.id+"/auto","POST",{quand:q.value,action:a.value,mot:mot.value,texte:tx.value,salon:sc.value||null,role:sr.value||null,minutes:parseInt(mn.value,10)||null})
+    .then(function(n){d.automations=n.automations;say("Automatisation créée ✅");draw()}).catch(function(e){say(e.message)})}},"Ajouter l’automatisation");
+  function draw(){box.textContent="";box.append(h("h2",null,"Automatisations"),h("p",{class:"mu"},"Quand ceci arrive, fais cela."),liste(),
+    h("label",{class:"f"},"Quand"),q,h("label",{class:"f"},"Alors"),a,dyn,h("div",{style:"margin-top:14px"},add));maj()}
+  draw();return box}
+
+function start(){
+  api("/api/me").then(function(me){CSRF=me.csrf;accueil(me)}).catch(function(e){
+    if(e.status===401)connexion();else connexion(e.message)})}
+start();
+})();
+</script>
+</body>
+</html>

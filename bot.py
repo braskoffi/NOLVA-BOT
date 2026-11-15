@@ -8,6 +8,8 @@ from discord import app_commands
 from discord.ext import commands
 from aiohttp import web
 
+import panel
+
 TOKEN = os.getenv("DISCORD_TOKEN")
 DATA = os.getenv("DATA_DIR", "data")  # sur Railway : DATA_DIR=/data (volume)
 os.makedirs(DATA, exist_ok=True)
@@ -67,12 +69,15 @@ intents.message_content = True
 
 class Nolva(commands.Bot):
     async def setup_hook(self):
-        self.db, self.log = db, log  # partagés avec les modules (tickets…)
-        await self.load_extension("tickets")
+        self.db, self.log = db, log  # partagés avec les modules
+        for ext in ("premium", "tickets", "roles", "automations", "serveur"):
+            await self.load_extension(ext)
         await self.tree.sync()
-        # petit serveur web : certains hébergeurs exigent un port ouvert
-        app = web.Application()
-        app.router.add_get("/", lambda r: web.Response(text="NOLVA en ligne"))
+        # serveur web : page d'accueil de contrôle + panneau (/panel) + API
+        app = panel.make_app(self, FEATURES)
+        async def sante(request):
+            return web.Response(text="NOLVA en ligne")
+        app.router.add_get("/", sante)
         runner = web.AppRunner(app)
         await runner.setup()
         await web.TCPSite(runner, "0.0.0.0", int(os.getenv("PORT", "8080"))).start()
@@ -117,6 +122,8 @@ def refus(i, m):
 async def on_error(i, e):
     if isinstance(e, app_commands.MissingPermissions):
         msg = "Tu n’as pas la permission d’utiliser cette commande."
+    elif isinstance(e, app_commands.CheckFailure):
+        msg = str(e) or "Tu ne peux pas utiliser cette commande ici."
     else:
         msg = "Une erreur est survenue."
         print("Erreur commande :", repr(e))
@@ -220,6 +227,10 @@ async def aide(i: discord.Interaction):
     e.add_field(name="Modération", value="/avertir · /avertissements · /muet · /demuet · /expulser · /bannir · /debannir · /effacer", inline=False)
     e.add_field(name="Réglages (administrateurs)", value="/nolva statut · fonction · salon · message · autorole · raid · deverrouiller", inline=False)
     e.add_field(name="Tickets", value="/ticket panneau · config · fermer · ajouter · retirer", inline=False)
+    e.add_field(name="Rôles", value="/roles menu · reaction · supprimer", inline=False)
+    e.add_field(name="Premium", value="/premium statut", inline=False)
+    e.add_field(name="Automatisations", value="/auto ajouter · liste · supprimer", inline=False)
+    e.add_field(name="Gestion du serveur", value="/serveur salon_creer · salon_supprimer · salon_renommer · verrouiller · deverrouiller · lent · role_creer · role_supprimer · role_donner · role_retirer · annoncer · sondage · info", inline=False)
     await i.response.send_message(embed=e, ephemeral=True)
 
 
