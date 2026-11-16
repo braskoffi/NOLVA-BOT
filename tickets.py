@@ -8,7 +8,7 @@ from discord import app_commands
 
 import premium
 
-COLOR = 0x7CF0D0
+COLOR = 0xA066FF
 DEFAUT = {"categorie": None, "role_staff": None, "transcriptions": None, "compteur": 0, "ouverts": {}}
 B = None  # le bot, rempli dans setup()
 en_fermeture = set()
