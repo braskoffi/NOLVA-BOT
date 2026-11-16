@@ -41,3 +41,6 @@ Fichier `index.html`. Dans le fichier, remplace la ligne `var PANEL_URL=...` par
 - **Gratuit** : modération, anti-raid, anti-spam, liens, bienvenue, rôle auto, journal, panneau, 3 automatisations, 1 menu de rôles.
 - **Premium (20 €/mois)** : tickets + transcription, 20 automatisations, menus de rôles illimités, commandes /serveur.
 - Activer un serveur (toi seul, propriétaire du bot) : `/premium activer serveur_id jours` ; retirer : `/premium desactiver serveur_id` ; voir l'offre : `/premium statut`.
+
+---
+Déploiement relancé le 16/11/2026.
