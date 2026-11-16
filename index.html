@@ -95,23 +95,24 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
 @media(max-width:980px){.feat{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:760px){.stats{grid-template-columns:1fr 1fr}.duo{grid-template-columns:1fr}.hb .btn:not(.p){display:none}nav{display:none}.feat{grid-template-columns:1fr}.steps{grid-template-columns:1fr;gap:30px}section{padding:70px 0}.hero{padding:60px 0 80px}.bar select{margin-left:0;width:100%}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.js .rv{transform:none;transition:opacity .2s}}
+.price{font-size:2.6rem;font-weight:800;line-height:1.1;margin:.2em 0}.price small{font-size:1rem;font-weight:500;opacity:.7}.card.pro{border-color:rgba(90,169,255,.7);box-shadow:0 0 50px rgba(60,130,255,.25)}
 </style>
 </head>
 <body>
 <canvas id="neb" aria-hidden="true"></canvas><canvas id="sky" aria-hidden="true"></canvas>
 <header><div class="wrap">
 <a class="logo" href="#top"><i></i>NOLVA</a>
-<nav><a href="#fonctions">Fonctionnalités</a><a href="#panneau">Panneau</a><a href="#demarrer">Démarrer</a><a href="#faq">FAQ</a></nav>
-<div class="hb"><a class="btn s" href="#panneau">Se connecter</a><a class="btn p s" href="#" data-invite>Ajouter NOLVA</a></div>
+<nav><a href="#fonctions">Fonctionnalités</a><a href="#panneau">Panneau</a><a href="#offres">Offres</a><a href="#demarrer">Démarrer</a><a href="#faq">FAQ</a></nav>
+<div class="hb"><a class="btn s" href="#panneau" data-panel>Se connecter</a><a class="btn p s" href="#" data-invite>Ajouter NOLVA</a></div>
 </div></header>
 
 <main id="top">
 <div class="hero"><div class="wrap">
 <div class="mark rv"></div>
-<div class="tag rv"><b>Bêta</b> · bientôt disponible</div>
+<div class="tag rv"><b>Bêta</b> · en ligne</div>
 <h1 class="rv" style="--d:.1s">Un bot Discord complet, sans une ligne de code.</h1>
 <p class="lead rv" style="--d:.2s">NOLVA protège, anime et organise ton serveur. Tout se règle depuis une application, au même endroit.</p>
-<div class="row rv" style="--d:.3s"><a class="btn p" href="#" data-invite>Ajouter NOLVA à mon serveur</a><a class="btn" href="#panneau">Essayer le panneau</a></div>
+<div class="row rv" style="--d:.3s"><a class="btn p" href="#" data-invite>Ajouter NOLVA à mon serveur</a><a class="btn" href="#panneau" data-panel>Ouvrir le panneau</a></div>
 <div class="stats rv" style="--d:.4s"><div><b>8</b>fonctions de protection</div><div><b>8</b>commandes de modération</div><div><b>0</b>ligne de code</div><div><b>1</b>panneau pour tout régler</div></div>
 </div></div>
 
@@ -132,13 +133,20 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
 <div class="hd rv"><span class="lb">Deux façons de régler</span><h2>Un bot. Deux façons de le régler.</h2><p>Choisis celle qui te convient le mieux.</p></div>
 <div class="duo">
 <div class="card rv"><h3>Les commandes</h3><p class="sub">Directement dans Discord</p><ul><li>Commandes slash en français</li><li>Sanctions, journal et réglages en une phrase</li><li>Rien de plus à installer</li></ul></div>
-<div class="card rv" style="--d:.1s"><h3>Le panneau</h3><p class="sub">Dans l’application</p><ul><li>Un interrupteur par fonction</li><li>Seuil anti-raid réglé d’un geste</li><li>Tous tes serveurs au même endroit</li></ul><a class="btn p s" href="#panneau">Essayer le panneau</a></div>
+<div class="card rv" style="--d:.1s"><h3>Le panneau</h3><p class="sub">Dans l’application</p><ul><li>Un interrupteur par fonction</li><li>Seuil anti-raid réglé d’un geste</li><li>Tous tes serveurs au même endroit</li></ul><a class="btn p s" href="#panneau" data-panel>Ouvrir le panneau</a></div>
 </div></div></section>
 
 <section id="panneau"><div class="wrap">
-<div class="hd rv"><span class="lb">Panneau</span><h2>Un seul panneau pour tout contrôler.</h2><p>Connecte-toi, choisis ton serveur, active ce dont tu as besoin. Essaie ci-dessous.</p></div>
+<div class="hd rv"><span class="lb">Panneau</span><h2>Un seul panneau pour tout contrôler.</h2><p>Connecte-toi, choisis ton serveur, règle ce dont tu as besoin.</p></div>
 <div class="panel rv" id="app" style="--d:.1s"></div>
 </div></section>
+
+<section id="offres"><div class="wrap">
+<div class="hd rv"><span class="lb">Offres</span><h2>Gratuit pour démarrer, Premium pour aller plus loin.</h2><p>Un abonnement par serveur, sans engagement.</p></div>
+<div class="duo">
+<div class="card rv"><h3>Gratuit</h3><div class="price">0 €</div><p class="sub">Pour protéger ton serveur</p><ul><li>Modération : avertir, muet, expulser, bannir</li><li>Anti-raid, anti-spam, filtre de liens</li><li>Bienvenue, rôle automatique, journal</li><li>Panneau web de réglages</li><li>3 automatisations</li><li>1 menu de rôles</li></ul></div>
+<div class="card pro rv" style="--d:.1s"><h3>Premium</h3><div class="price">20 €<small> / mois</small></div><p class="sub">Pour gérer tout le serveur</p><ul><li>Tout le plan Gratuit</li><li>Tickets : bouton, salon privé, transcription</li><li>20 automatisations</li><li>Menus de rôles illimités (réactions et sélection)</li><li>Gestion du serveur par commandes : salons, rôles, annonces, sondages</li></ul><a class="btn p" href="#" data-premium>Passer en Premium</a></div>
+</div></div></section>
 
 <section id="demarrer"><div class="wrap">
 <div class="hd rv"><span class="lb">Démarrer</span><h2>Prêt en trois étapes.</h2></div>
@@ -153,7 +161,7 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
 <div class="rv">
 <details><summary>Faut-il savoir coder ?</summary><p>Non. Tout se règle depuis l’application, avec des interrupteurs, des champs et des blocs à assembler.</p></details>
 <details><summary>Puis-je gérer plusieurs serveurs ?</summary><p>Oui. Tu choisis le serveur à régler en haut du panneau, et chacun garde ses propres réglages.</p></details>
-<details><summary>Le panneau de cette page est-il le vrai ?</summary><p>C’est une démonstration : elle montre comment les réglages se présentent, sans toucher à un vrai serveur. Le vrai panneau se connectera à ton serveur avec Discord.</p></details>
+<details><summary>Le panneau est-il sécurisé ?</summary><p>Oui. La connexion passe par Discord (OAuth2) : NOLVA ne voit jamais ton mot de passe. Seuls les serveurs que tu administres apparaissent, et tes droits sont revérifiés à chaque modification.</p></details>
 <details><summary>Quand le bot sera-t-il disponible ?</summary><p>NOLVA est en bêta. L’invitation s’ouvrira ici dès que le bot sera prêt.</p></details>
 </div></div></section>
 
@@ -167,7 +175,7 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
 
 <script>
 (function(){
-var INVITE_URL="https://discord.com/oauth2/authorize?client_id=1571576813761855589&permissions=1099780156422&integration_type=0&scope=bot%20applications.commands"; /* colle ici le lien d’invitation du bot (avec son CLIENT_ID) */
+var INVITE_URL="https://discord.com/oauth2/authorize?client_id=1571576813761855589&permissions=1099780189270&integration_type=0&scope=bot%20applications.commands"; /* colle ici le lien d’invitation du bot (avec son CLIENT_ID) */
 var d=document,h=d.documentElement;h.classList.add('js');
 var io=('IntersectionObserver' in window)?new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.12,rootMargin:'0px 0px -6% 0px'}):null;
 d.querySelectorAll('.rv').forEach(function(el){io?io.observe(el):el.classList.add('in')});
@@ -175,29 +183,13 @@ var tt,toast=d.getElementById('toast');
 function say(m){toast.textContent=m;toast.classList.add('on');clearTimeout(tt);tt=setTimeout(function(){toast.classList.remove('on')},3800)}
 d.querySelectorAll('[data-invite]').forEach(function(a){a.addEventListener('click',function(e){e.preventDefault();if(INVITE_URL){location.href=INVITE_URL}else{say('L’invitation du bot sera disponible très bientôt.')}})});
 
-var F=[['antiraid','Anti-raid','Verrouille le serveur en cas d’arrivées en rafale.'],['antispam','Anti-spam','Freine les messages répétés et les mentions de masse.'],['tickets','Tickets','Salons privés d’aide ouverts d’un bouton.'],['welcome','Messages de bienvenue','Accueille chaque nouveau membre.'],['autorole','Rôles automatiques','Donne un rôle de départ à l’arrivée.'],['logs','Journal des actions','Garde la trace des modifications et suppressions.'],['links','Filtre de liens','Retire les liens non autorisés.']];
-var S=['Le Terrier (démo)','Atelier Nova (démo)'];
-var st={login:false,srv:0,on:[{antiraid:1,antispam:1},{logs:1}],th:[8,8]};
-try{var r=localStorage.getItem('nolva:v1');if(r){var p=JSON.parse(r);if(p&&p.on&&p.th)st=p}}catch(e){}
-function save(){try{localStorage.setItem('nolva:v1',JSON.stringify(st))}catch(e){}}
+var PANEL_URL="https://nolva-production.up.railway.app/panel"; /* adresse publique de ton service Railway + /panel */
+var PREMIUM_URL=""; /* lien de paiement (Stripe, PayPal, Ko-fi…) : à coller ici quand il existe */
+d.querySelectorAll('[data-premium]').forEach(function(a){a.addEventListener('click',function(e){e.preventDefault();if(PREMIUM_URL){location.href=PREMIUM_URL}else{say('Les abonnements ouvrent très bientôt.')}})});
 var app=d.getElementById('app');
-function render(){
-if(!st.login){app.innerHTML='<div class="gate"><h3>Connecte-toi pour régler NOLVA</h3><p>Cette démonstration simule la connexion Discord : aucun compte réel n’est utilisé.</p><button class="btn p" id="in">Se connecter avec Discord</button></div>';
-d.getElementById('in').onclick=function(){st.login=true;save();render()};return}
-var on=st.on[st.srv],n=0;F.forEach(function(f){if(on[f[0]])n++});
-var o='<div class="bar"><div class="av">D</div><div class="who">Invité démo<small>Administrateur</small></div><select id="sv" aria-label="Serveur">';
-S.forEach(function(s,i){o+='<option value="'+i+'"'+(i==st.srv?' selected':'')+'>'+s+'</option>'});
-o+='</select><button class="btn s" id="out">Se déconnecter</button></div><div class="sum"><b>'+n+'</b> fonction'+(n>1?'s':'')+' active'+(n>1?'s':'')+' sur '+F.length+'</div>';
-F.forEach(function(f){var c=on[f[0]]?'true':'false';
-o+='<div class="t"><div><strong>'+f[1]+'</strong><span>'+f[2]+'</span></div><button class="sw" role="switch" aria-checked="'+c+'" aria-label="'+f[1]+'" data-k="'+f[0]+'"></button></div>';
-if(f[0]=='antiraid'&&on.antiraid)o+='<div class="th"><label for="th">Seuil</label><input id="th" type="range" min="3" max="20" value="'+st.th[st.srv]+'"><output id="tv">'+st.th[st.srv]+' arrivées / 10 s</output></div>'});
-app.innerHTML=o;
-d.getElementById('out').onclick=function(){st.login=false;save();render()};
-d.getElementById('sv').onchange=function(e){st.srv=+e.target.value;save();render()};
-app.querySelectorAll('.sw').forEach(function(b){b.onclick=function(){var k=b.dataset.k;on[k]=on[k]?0:1;save();render();var el=app.querySelector('[data-k="'+k+'"]');if(el)el.focus();say(F.filter(function(f){return f[0]==k})[0][1]+(on[k]?' activé':' désactivé')+' (démo)')}});
-var th=d.getElementById('th');if(th)th.oninput=function(){st.th[st.srv]=+th.value;d.getElementById('tv').textContent=th.value+' arrivées / 10 s';save()};
-}
-render();
+app.innerHTML='<div class="gate"><h3>Connecte-toi pour régler NOLVA</h3><p>Le panneau liste les serveurs que tu administres et applique chaque réglage directement sur ton bot.</p><a class="btn p" id="in" href="#">Se connecter avec Discord</a></div>';
+function go(e){e.preventDefault();if(PANEL_URL.indexOf('REMPLACE')>-1){say('Le panneau sera disponible très bientôt.')}else{location.href=PANEL_URL}}
+d.querySelectorAll('#in,[data-panel]').forEach(function(a){a.addEventListener('click',go)});
 })();
 </script>
 <script>
