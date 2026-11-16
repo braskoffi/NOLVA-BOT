@@ -70,7 +70,7 @@ intents.message_content = True
 class Nolva(commands.Bot):
     async def setup_hook(self):
         self.db, self.log = db, log  # partagés avec les modules
-        for ext in ("premium", "tickets", "roles", "automations", "serveur"):
+        for ext in ("premium", "tickets", "roles", "automations", "serveur", "genese"):
             await self.load_extension(ext)
         await self.tree.sync()
         # serveur web : page d'accueil de contrôle + panneau (/panel) + API
@@ -231,6 +231,7 @@ async def aide(i: discord.Interaction):
     e.add_field(name="Premium", value="/premium statut", inline=False)
     e.add_field(name="Automatisations", value="/auto ajouter · liste · supprimer", inline=False)
     e.add_field(name="Gestion du serveur", value="/serveur salon_creer · salon_supprimer · salon_renommer · verrouiller · deverrouiller · lent · role_creer · role_supprimer · role_donner · role_retirer · annoncer · sondage · info", inline=False)
+    e.add_field(name="Reconstruire le serveur (propriétaire)", value="/genese lancer · sauvegarde · restaurer", inline=False)
     await i.response.send_message(embed=e, ephemeral=True)
 
 
